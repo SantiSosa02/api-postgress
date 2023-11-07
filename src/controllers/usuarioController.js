@@ -197,35 +197,37 @@ async function deleteUser(req, res) {
 }
 
 async function loginUser(req, res) {
-  const {correo, contrasena} = req.body;
+  const { correo, contrasena } = req.body;
 
-  try{
-    const usuario= await Usuario.findOne({where : {correo}});
+  try {
+    const usuario = await Usuario.findOne({ where: { correo } });
 
-    if(!usuario){
-      return res.status(401).json({error : "Credenciales incorrectas."});
+    if (!usuario) {
+      return res.status(401).json({ error: "Credenciales incorrectas." });
     }
 
-    if(usuario.estado == false){
-      return res.status(400).json({error: "El usuario esta inactivo."})
+    if (usuario.estado === false) {
+      return res.status(400).json({ error: "El usuario está inactivo." });
     }
 
-    const isPasswordValid = usuario.contrasena === contrasena;
+    // Compara la contraseña proporcionada con la contraseña almacenada en la base de datos
+    const isPasswordValid = await bcrypt.compare(contrasena, usuario.contrasena);
 
-    if(!isPasswordValid){
-      return res.status(401).json({error: "Credenciales incorrectas."});
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Credenciales incorrectas." });
     }
 
     res.json({
-      message:"Inicio de sesión exitoso.",
-      name:usuario.nombre
+      message: "Inicio de sesión exitoso.",
+      name: usuario.nombre
     });
 
-  }catch(error){
-    console.error("Error la iniciar sesión: ", error);
-    res.status(500).json({error : "Error al iniciar sesión."})
+  } catch (error) {
+    console.error("Error al iniciar sesión: ", error);
+    res.status(500).json({ error: "Error al iniciar sesión." });
   }
 }
+
 
 async function updateUserState(req, res) {
   const { id } = req.params;

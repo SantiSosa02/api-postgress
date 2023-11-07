@@ -91,6 +91,7 @@ async function createSale(req, res) {
 
   //definimos los metodos de pago 
   const metodos_pago = ["Efectivo", "Transferencia bancaria"];
+  const estados_pago=["Pagado","Por pagar"]
 
   //validamos que se coloque un metodo de pago que este definido
   if (!metodos_pago.includes(metodopago)) {
