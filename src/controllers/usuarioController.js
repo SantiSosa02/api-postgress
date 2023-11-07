@@ -33,18 +33,17 @@ async function getUserById(req, res) {
   }
 }
 
-const getActiveUsers = async (req, res) => {
-  try {
-    const usuarios = await Usuario.findAll({ where: { estado: true } });
+const getActiveUsers =  async (req, res) => {
+  try{
+     const usuarios =  await Usuario.findAll({where : {estado: true}});
 
-    if (usuarios.length === 0) {
-      return res.status(400).json({ error: "No hay usuarios activos" });
-    }
-
-    res.json(usuarios);
-  } catch (error) { // Asegúrate de agregar el parámetro 'error' aquí
-    console.error(error); // Imprime el error para el registro
-    res.status(500).json({ error: "Error al obtener los usuarios activos" });
+     if (usuarios.length === 0 ){
+      return res.status(400).json({error : "No hay usuarios activos"});
+     }
+     res.json(usuarios);
+  }catch{
+    console.error(error);
+    res.status(500).json({error: "Error al obtener los usuarios activos"})
   }
 }
 
