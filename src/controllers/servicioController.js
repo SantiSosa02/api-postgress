@@ -59,18 +59,18 @@ async function getServiceById(req, res) {
 async function createService(req, res) {
   const { nombre, descripcion, estado  } = req.body;
 
-  const validacion=/^[a-zA-Z]+(\s[a-zA-Z]+)?$/;
+  const validacion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
 
   if(!validacion.test(nombre)){
-    return res.status(400).json({error: "El nombre solo puede contener letras."})
+    return res.status(400).json({error: "El nombre solo acepta letras, espacios y letras con acentos  (á, é, í, ó, ú)."})
   }
 
   if( nombre.length > 100 ){
     return res.status(400).json({error: "El nombre excede la longitud mixima permitida '100' "})
   }
 
-  if( descripcion.length > 100 ){
-    return res.status(400).json({error: "La descripcion excede la longitud mixima permitida '100' "})
+  if( descripcion.length > 200 ){
+    return res.status(400).json({error: "La descripción no debe superar los 200 caracteres. "})
   }
 
   const nombreExistente= await Servicio.findOne({where: {nombre}});
@@ -83,10 +83,10 @@ async function createService(req, res) {
 
     const servicio = await Servicio.create({ nombre, descripcion, estado   });
 
-    res.status(201).json({ status: 'success', message: 'Categoría creada con éxito', servicio });
+    res.status(201).json({ status: 'success', message: 'Servicio creado con éxito', servicio });
 
   } catch (error) {
-    res.status(400).json({ error: 'Error al crear la categoria.' });
+    res.status(400).json({ error: 'Error al crear el servicio.' });
   }
 }
 
@@ -94,10 +94,10 @@ async function updateService(req, res) {
   const { id } = req.params;
   const { nombre, descripcion, estado } = req.body;
 
-  const validacion=/^[a-zA-Z]+(\s[a-zA-Z]+)?$/;
+  const validacion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]+$/;
 
   if(!validacion.test(nombre)){
-    return res.status(400).json({error: "El nombre solo puede contener letras."})
+    return res.status(400).json({error: "El nombre solo acepta letras, espacios y letras con acentos  (á, é, í, ó, ú)."})
   }
   if( nombre.length > 100 ){
     return res.status(400).json({error: "El nombre excede la longitud mixima permitida '100' "})
