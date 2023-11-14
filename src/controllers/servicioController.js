@@ -94,7 +94,7 @@ async function updateService(req, res) {
   const { id } = req.params;
   const { nombre, descripcion, estado } = req.body;
 
-  const validacion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]+$/;
+  const validacion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
 
   if(!validacion.test(nombre)){
     return res.status(400).json({error: "El nombre solo acepta letras, espacios y letras con acentos  (á, é, í, ó, ú)."})
