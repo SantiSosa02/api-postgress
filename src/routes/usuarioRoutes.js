@@ -11,7 +11,7 @@ router.put('/usuarios/estado/:id', UserController.updateUserState);
 router.delete('/usuarios/:id', UserController.deleteUser)
 router.post('/usuarios/login' , UserController.loginUser);
 router.post('/usuarios/recuperar', UserController.forgotPassword);
-router.post('/change-password', UserController.changePassword);
+router.post('/cambiar-contrasena/:token', UserController.changePassword);
 router.get('/usuarios-activos', UserController.getActiveUsers);
 router.get('/usuarios-inactivos', UserController.getInactiveUsers);
 router.get('/usuarios-buscar', UserController.searchUser);

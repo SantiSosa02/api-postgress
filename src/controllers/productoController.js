@@ -2,33 +2,19 @@
 const  Producto  = require('../models/producto');  
 const Categoria = require ('../models/categoria')
 
-const getAllProducts = async (req, res)=>{
-  try{
-    const productos =  await Producto.findAll();
+const getAllProducts = async (req, res) => {
+  try {
+    const productos = await Producto.findAll();  
 
-    if(productos.length === 0){
-      return res.status(404).json({message: ' No hay productos registrados.'})
+    if (productos.length === 0 ){
+      return res.status(404).json({message: "No hay prodcutos registrados"})
     }
-
-    const productosConCategoria = await Promise.all(productos.map(async (producto) => {
-      const categoria = await Categoria.findByPk(producto.idcategoria);
-      return{
-        idproducto: producto.idproducto,
-        idcategoria: producto.idcategoria,
-        nombre:producto.nombre,
-        stock_minimo: producto.stock_minimo,
-        cantidad:producto.cantidad,
-        precio_venta: producto.precio_venta,
-        estado:producto.estado,
-        categoria: categoria ? categoria.nombre : null,
-      };
-    }));
-    res.json(productosConCategoria);
-  }catch(error){
-    console.error('Error fetching productos:' , error);
-    res.status(500).json({erro:'Internal server error'})
+    res.json(productos);
+  } catch (error) {
+    console.error('Error fetching services:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+};
 
 // Obtener un producto por ID
 async function getProductById(req, res) {
@@ -44,62 +30,32 @@ async function getProductById(req, res) {
   }
 }
 
-const getActiveProducts = async (req, res) => {
-  try {
-    const productos = await Producto.findAll({ where: { estado: true } });
+const getActiveProducts =  async (req, res) => {
+  try{
+     const productos =  await Producto.findAll({where : {estado: true}});
 
-    if (productos.length === 0) {
-      return res.status(404).json({ message: 'No hay productos activos.' });
-    }
-
-    const productosConCategoria = await Promise.all(productos.map(async (producto) => {
-      const categoria = await Categoria.findByPk(producto.idcategoria);
-      return {
-        idproducto: producto.idproducto,
-        idcategoria: producto.idcategoria,
-        nombre: producto.nombre,
-        stock_minimo: producto.stock_minimo,
-        cantidad: producto.cantidad,
-        precio_venta: producto.precio_venta,
-        estado: producto.estado,
-        categoria: categoria ? categoria.nombre : null,
-      };
-    }));
-
-    res.json(productosConCategoria);
-  } catch (error) {
-    console.error('Error fetching active products:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+     if (productos.length === 0 ){
+      return res.status(400).json({error : "No hay productos activos"});
+     }
+     res.json(productos);
+  }catch{
+    console.error(error);
+    res.status(500).json({error: "Error al obtener los productos activos"})
   }
 }
 
 
-const getInactiveProducts = async (req, res) => {
-  try {
-    const productos = await Producto.findAll({ where: { estado: false } });
+const getInactiveProducts =  async (req, res) => {
+  try{
+     const productos =  await Producto.findAll({where : {estado: false}});
 
-    if (productos.length === 0) {
-      return res.status(404).json({ message: 'No hay productos inactivos.' });
-    }
-
-    const productosConCategoria = await Promise.all(productos.map(async (producto) => {
-      const categoria = await Categoria.findByPk(producto.idcategoria);
-      return {
-        idproducto: producto.idproducto,
-        idcategoria: producto.idcategoria,
-        nombre: producto.nombre,
-        stock_minimo: producto.stock_minimo,
-        cantidad: producto.cantidad,
-        precio_venta: producto.precio_venta,
-        estado: producto.estado,
-        categoria: categoria ? categoria.nombre : null,
-      };
-    }));
-
-    res.json(productosConCategoria);
-  } catch (error) {
-    console.error('Error fetching inactive products:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+     if (productos.length === 0 ){
+      return res.status(400).json({error : "No hay productos inactivos"});
+     }
+     res.json(productos);
+  }catch{
+    console.error(error);
+    res.status(500).json({error: "Error al obtener los productos inactivos"})
   }
 }
 
@@ -350,6 +306,31 @@ async function getCantidadActual(req, res) {
   }
 }
 
+async function getProductosByCategoria(req, res) {
+  const { idcategoria } = req.params;
+
+  try {
+    // Busca los productos que tienen la categoría correspondiente y estado activo
+    const productos = await Producto.findAll({
+      where: {
+        idcategoria: idcategoria,
+        estado: true // Ajusta esto según la estructura de tu modelo y el valor booleano para el estado activo
+      }
+    });
+
+    if (productos.length === 0) {
+      return res.status(404).json({ message: 'No hay productos activos en esta categoría.' });
+    }
+
+    res.json(productos);
+  } catch (error) {
+    console.error('Error al obtener productos por categoría:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+}
+
+
+
 module.exports = {
     getAllProducts,
     getProductById,
@@ -362,5 +343,6 @@ module.exports = {
     searchProduct,
     verificarNombreExistente,
     agregarCantidad,
-    getCantidadActual
+    getCantidadActual,
+    getProductosByCategoria
 };

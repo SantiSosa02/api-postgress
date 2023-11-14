@@ -3,6 +3,8 @@ const  Venta  = require('../models/venta');
 const  DetalleVentaProducto = require ('../models/detalleventaproducto');
 const  DetalleVentaServicio = require ('../models/detalleventaservicio');
 const Producto = require ('../models/producto')
+const Cliente = require('../models/cliente');
+const Abono = require('../models/abono');
 
 //definimos los estados permitidos tipo boolean
 const estadosPermitidos = [true, false];
@@ -85,63 +87,53 @@ const getInactiveSales = async (req, res) => {
 
 //creamos una venta
 async function createSale(req, res) {
-  const { idcliente, numerofactura, fecha, metodopago, valortotal, estado, detalleProductos, detalleServicios } = req.body;
+  const { idcliente, numerofactura, fecha, metodopago, valortotal, estado, estadopago, detalleProductos, detalleServicios } = req.body;
 
+  // Validaciones
   const validacionNumeroFactura = /^[0-9]+$/;
+  const metodos_pago = ["Efectivo", "Transferencia"];
+  const estados_pago = ["Pagado", "Por pagos"];
 
-  //definimos los metodos de pago 
-  const metodos_pago = ["Efectivo", "Transferencia bancaria"];
-  const estados_pago=["Pagado","Por pagar"]
-
-  //validamos que se coloque un metodo de pago que este definido
   if (!metodos_pago.includes(metodopago)) {
-    return res.status(400).json({ error: "Los métodos de pago son: Efectivo, Tarjeta de crédito, Transferencia bancaria" });
+    return res.status(400).json({ error: "Los métodos de pago son: Efectivo y Transferencia bancaria" });
   }
 
-  if(!validacionNumeroFactura.test(numerofactura)){
-    return res.status(400).json({ error: "El numero de factura solo acepta valores numericos"});
+  if (!estados_pago.includes(estadopago)) {
+    return res.status(400).json({ error: "Los estados de pago son: Pagado y Por pagos" });
   }
 
-  //definimo una variable para verificar que el neumero de la factura no exista 
+  if (!validacionNumeroFactura.test(numerofactura)) {
+    return res.status(400).json({ error: "El numero de factura solo acepta valores numericos" });
+  }
+
   const numero_factura_existente = await Venta.findOne({ where: { numerofactura } });
-
-  //si el numero de factura existe mostramos un mensaje
   if (numero_factura_existente) {
     return res.status(400).json({ error: "El número de factura ya existe." });
   }
 
   try {
-    
-    //creamos la variable para poder obtener el valor total de la venta
-    let valortotal_venta = 0;  
-
     // Calcular valortotal_venta sumando los valores de los productos
+    let valortotal_venta = 0;
+
     for (const detalleProducto of detalleProductos) {
       const producto = await Producto.findByPk(detalleProducto.idproducto);
+
       if (!producto) {
-        return res.status(404).json({ error: `Producto con ID ${detalleProducto.idproducto} no encontrado.` });
+        throw new Error(`Producto con ID ${detalleProducto.idproducto} no encontrado.`);
       }
 
-      //validamos que la cantidad a vender no sea mayor a la cantidad de existencias 
       if (detalleProducto.cantidadproducto > producto.cantidad) {
-        return res.status(400).json({ error: "No hay suficientes unidades" });
+        throw new Error("No hay suficientes unidades");
       }
 
-      // Calcular el precio del producto en detalleProducto
       const precio_producto = detalleProducto.cantidadproducto * producto.precio_venta;
-
-      // Sumar al valortotal_venta
       valortotal_venta += precio_producto;
 
-      // Restar la cantidad vendida al producto
       const nuevaCantidad = producto.cantidad - detalleProducto.cantidadproducto;
-
-      // Asegúrate de que la cantidad no sea negativa
       if (nuevaCantidad < 0) {
-        return res.status(400).json({ error: "No hay suficientes unidades" });
+        throw new Error("No hay suficientes unidades");
       }
 
-      //actualizamos la cantidad en la tabla de productos , restando la cantidad que se coloco en la venta
       await producto.update({ cantidad: nuevaCantidad });
     }
 
@@ -151,13 +143,13 @@ async function createSale(req, res) {
 
     const fechaActual = new Date().toISOString().split('T')[0];
 
-
     // Crear la venta
     const venta = await Venta.create({
       idcliente,
       numerofactura,
-      fecha:fechaActual,
+      fecha: fechaActual,
       metodopago,
+      estadopago,
       valortotal: valortotal_venta,
       estado
     });
@@ -168,16 +160,14 @@ async function createSale(req, res) {
         const validacion_cantidad = /^[0-9]+$/;
 
         if (!validacion_cantidad.test(detalleProducto.cantidadproducto)) {
-          return res.status(400).json({ error: "La cantidad del producto solo acepta valores numéricos" });
+          throw new Error("La cantidad del producto solo acepta valores numéricos");
         }
 
-        // Obtener el producto asociado al detalle
         const producto = await Producto.findByPk(detalleProducto.idproducto);
         if (!producto) {
-          return res.status(404).json({ error: `Producto con ID ${detalleProducto.idproducto} no encontrado.` });
+          throw new Error(`Producto con ID ${detalleProducto.idproducto} no encontrado.`);
         }
 
-        // Crear el detalle de venta de producto asociado a la venta
         await DetalleVentaProducto.create({
           idventa: venta.idventa,
           idproducto: detalleProducto.idproducto,
@@ -191,8 +181,9 @@ async function createSale(req, res) {
     await Promise.all(
       detalleServicios.map(async (detalleServicio) => {
         if (detalleServicio.descripcion.length > 100) {
-          return res.status(400).json({ error: "La descripción excede la longitud máxima permitida (100)" });
+          throw new Error("La descripción excede la longitud máxima permitida (100)");
         }
+
         await DetalleVentaServicio.create({
           idventa: venta.idventa,
           idservicio: detalleServicio.idservicio,
@@ -204,10 +195,12 @@ async function createSale(req, res) {
 
     res.status(201).json({ venta, detalleProductos, detalleServicios });
   } catch (error) {
-    console.error('Error al crear la venta:', error);
+    console.error('Error al crear la venta:', error.message);
+    console.error('Detalles:', error);
     res.status(400).json({ error: 'Error al crear la venta.' });
   }
 }
+
 
 //actualizar el estado de la venta 
 async function updateSaleState(req, res) {
@@ -219,13 +212,19 @@ async function updateSaleState(req, res) {
 
     //buscamos la venta por id
     const venta = await Venta.findByPk(id, {
-      include: [DetalleVentaProducto],
+      include: [DetalleVentaProducto,Abono],
     });
 
     //si la veta no existe mostranos un mensaje
     if (!venta) {
       return res.status(404).json({ error: 'Venta no encontrada.' });
     }
+
+        // Verificar si hay abonos relacionados a la venta
+        const abonosRelacionados = venta.Abonos;
+        if (abonosRelacionados.length > 0) {
+          return res.status(400).json({ error: 'No se puede cambiar el estado, hay abonos relacionados.' });
+        }
 
     // Verificar si el nuevo estado es permitido para cambios
     if (!estadosPermitidos.includes(estado)) {
@@ -262,52 +261,84 @@ async function updateSaleState(req, res) {
     }
 
     res.json({ message: 'Estado de venta actualizado exitosamente.' });
-  } catch (error) {
-    console.error('Error al actualizar el estado de la venta:', error);
+  }catch (error) {
+    console.error('Error interno del servidor:', error);
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 }
 
-async function searchSale( req, res){
-
-  const {numerofactura, metodopago} = req.body;
-  const valorBuscar={};
-
-  //definimos los metodos de pago 
-  const metodos_pago = ["Efectivo", "Tarjeta de crédito", "Transferencia bancaria"];
+async function searchSale(req, res) {
+  const { idcliente } = req.body;
+  const valorBuscar = {};
+  
   const validacionNumeroFactura = /^[0-9]+$/;
-
-  if (metodopago) {
-    if (!metodos_pago.includes(metodopago)) {
-      return res.status(400).json({ error: "Los métodos de pago son: Efectivo, Tarjeta de crédito, Transferencia bancaria" });
+  
+  if (idcliente) {
+    // Validar que idcliente sea un valor numérico
+    if (!validacionNumeroFactura.test(idcliente)) {
+      return res.status(400).json({ error: "El idcliente debe ser un valor numérico." });
     }
-    valorBuscar.metodopago = metodopago;
+  
+    // Realizar la búsqueda por idcliente
+    const clientesEncontrados = await Cliente.findAll({
+      where: { idcliente },
+    });
+  
+    if (clientesEncontrados.length === 0) {
+      return res.status(404).json({ message: "No se encontraron clientes con el idcliente proporcionado." });
+    }
+  
+    // Establecer idcliente para la búsqueda
+    valorBuscar.idcliente = idcliente;
   }
-
-  // Validamos que si se proporciona un número de factura, este sea numérico
-  if (numerofactura) {
-    if (!validacionNumeroFactura.test(numerofactura)) {
-      return res.status(400).json({ error: "El número de factura solo acepta valores numéricos." });
+  
+  try {
+    const venta = await Venta.findAll({
+      where: valorBuscar,
+    });
+  
+    if (venta.length === 0) {
+      return res.status(404).json({ message: "No se encontraron ventas con los parámetros proporcionados." });
     }
-    valorBuscar.numerofactura = numerofactura;
-  }
-
-  try{
-
-    const venta= await Venta.findAll({ include:[
-      DetalleVentaProducto, DetalleVentaServicio],
-       where: valorBuscar});
-
-    if(!venta){
-      return res.status(404).json({message:"No se encontraron ventas con los parametros proporcionados" })
-    }
-
-    res.json(venta)
-  }catch(error){
-    console.log(error)
-    res.status(500).json({error: "Error al buscar la venta"})
+  
+    res.json(venta);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error al buscar la venta." });
   }
 }
+
+async function abonosRelacionados(req, res) {
+  const { id } = req.params;
+
+  try {
+    // Buscamos la venta por ID
+    const venta = await Venta.findByPk(id);
+
+    // Si la venta no existe, retornamos un mensaje de error
+    if (!venta) {
+      return res.status(404).json({ error: 'Venta no encontrada.' });
+    }
+
+    // Verificamos si hay abonos relacionados a la venta
+    const abonosRelacionados = await Abono.findAll({
+      where: { idventa: id }
+    });
+
+    if (abonosRelacionados.length > 0) {
+      // Devolvemos la cantidad de abonos y la información adicional que necesites
+      return res.json({ tieneAbonos: true, cantidadAbonos: abonosRelacionados.length });
+    }
+
+    // Si no hay abonos relacionados, todo está bien
+    res.json({ tieneAbonos: false, cantidadAbonos: 0 });
+  } catch (error) {
+    console.error('Error al verificar abonos relacionados:', error);
+    res.status(500).json({ error: 'Error al verificar abonos relacionados.' });
+  }
+}
+
+
 
 
 module.exports = {
@@ -317,5 +348,7 @@ module.exports = {
     updateSaleState,
     getActiveSales,
     getInactiveSales,
-    searchSale
+    searchSale,
+    abonosRelacionados
+
 };

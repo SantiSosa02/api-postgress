@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 const DetalleVentaProducto = require('./detalleventaproducto'); 
 const DetalleVentaServicio = require('./detalleventaservicio');
+const Abono = require('./abono')
 
 const Venta = sequelize.define('Venta', {
     idventa: {
@@ -32,6 +33,10 @@ const Venta = sequelize.define('Venta', {
       type: DataTypes.STRING(100),
       allowNull: false
     },
+    estadopago: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     valortotal: {
       type: DataTypes.DOUBLE,
       allowNull: false
@@ -59,5 +64,6 @@ const Venta = sequelize.define('Venta', {
   
   Venta.hasMany(DetalleVentaProducto, { foreignKey: 'idventa' });
   Venta.hasMany(DetalleVentaServicio, { foreignKey: 'idventa' });
+  Venta.hasMany(Abono, { foreignKey: 'idventa' });
 
   module.exports = Venta;

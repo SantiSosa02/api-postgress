@@ -15,6 +15,7 @@ router.get('/productos-buscar', ProductController.searchProduct);
 router.get('/productos-nombre', ProductController.verificarNombreExistente);
 router.put('/productos-agregar/:id', ProductController.agregarCantidad);
 router.get('/productos-cantidad/:id', ProductController.getCantidadActual);
+router.get('/productos-categoria/:idcategoria', ProductController.getProductosByCategoria);
 
 
 module.exports = router;

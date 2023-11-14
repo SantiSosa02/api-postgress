@@ -10,5 +10,7 @@ router.put('/ventas/estado/:id', SaleController.updateSaleState);
 router.get('/ventas-activas', SaleController.getActiveSales);
 router.get('/ventas-inactivas', SaleController.getInactiveSales);
 router.get('/ventas-buscar', SaleController.searchSale);
+router.get('/ventas/abonos-relacionados/:id', SaleController.abonosRelacionados);
+
 
 module.exports = router;

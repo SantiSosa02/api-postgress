@@ -314,7 +314,7 @@ async function forgotPassword(req, res) {
       from: 'santi4586sosa@gmail.com',
       to: correo,
       subject: 'Recuperación de Contraseña',
-      text: `Haga clic en el siguiente enlace para restablecer su contraseña: https://localhost:8080/api/change-password?token=${resetToken}`,
+      text: `Haga clic en el siguiente enlace para restablecer su contraseña: http://localhost:4200/#/cambiar-contrasena/${resetToken}`,
     };
 
     // Enviar correo con el enlace de restablecimiento de contraseña
@@ -328,9 +328,11 @@ async function forgotPassword(req, res) {
 }
 
 async function changePassword(req, res) {
-  const { token, newPassword } = req.body;
+  const { token } = req.params
+  const { newPassword } = req.body;
 
   try {
+    
     // Busca al usuario por el token de reseteo
     const usuario = resetTokens[token];
 
@@ -338,8 +340,11 @@ async function changePassword(req, res) {
       return res.status(404).json({ error: 'Usuario no encontrado.' });
     }
 
+    const saltRounds = 10;
+    const hashedPassword = bcrypt.hashSync(newPassword, saltRounds);
+
     // Actualiza la contraseña
-    usuario.contrasena = newPassword;
+    usuario.contrasena = hashedPassword;
     await usuario.save();
 
     // Elimina el token de la memoria

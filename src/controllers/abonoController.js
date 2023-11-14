@@ -63,7 +63,7 @@ const getInactivePayments =  async (req, res) => {
 
 
 async function createPayment(req, res) {
-  const { idventa, fechaabono, valorabono,valorrestante, estado } = req.body;
+  const { idventa, fechaabono, valorabono, valorrestante, estado } = req.body;
 
   try {
     // Obtener la venta asociada al idventa proporcionado
@@ -92,7 +92,7 @@ async function createPayment(req, res) {
       return res.status(400).json({ error: 'El abono excede el valor restante de la venta.' });
     }
 
-    const feachaActual= new Date().toDateString().split('T')[0];
+    const feachaActual =new Date().toISOString().split('T')[0];
 
     // Actualizar el valor restante en la venta
     valorRestante -= valorabono;
@@ -107,10 +107,11 @@ async function createPayment(req, res) {
       estado
     });
 
+    // Verificar si el valor restante total de la venta es igual a 0 y cambiar el estado de la venta
     if (valorRestante <= 0) {
-        return res.status(200).json({ message: 'El pago de la venta ha sido completado' });
-      }
-      
+      // Cambiar el estado de la venta a "Pagado"
+      await venta.update({ estadopago: 'Pagado' });
+    }
 
     res.status(201).json(abono);
   } catch (error) {
@@ -118,6 +119,7 @@ async function createPayment(req, res) {
     console.error('Error al crear el abono:', error);
   }
 }
+
 
 async function updatePaymentState(req, res) {
     const { id } = req.params;
