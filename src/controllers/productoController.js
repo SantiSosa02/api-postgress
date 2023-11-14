@@ -62,11 +62,11 @@ const getInactiveProducts =  async (req, res) => {
 async function createProduct(req, res) {
   const { nombre, idcategoria, stock_minimo, cantidad, precio_venta, estado } = req.body;
 
-  const nombreValidacion = /^[a-zA-ZñÑ\s]+$/;
+  const nombreValidacion = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]+$/;;
   const cantidadValidacion = /^[0-9]+/;
 
   if (!nombreValidacion.test(nombre)) {
-    return res.status(400).json({ error: "El nombre solo puede contener letras." });
+    return res.status(400).json({ error: "El nombre solo acepta letras, espacios, números y letras con acentos (á, é, í, ó, ú)." });
   }
 
   if (nombre.length > 100) {
