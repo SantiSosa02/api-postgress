@@ -69,8 +69,8 @@ async function createProduct(req, res) {
     return res.status(400).json({ error: "El nombre solo acepta letras, espacios, números y letras con acentos (á, é, í, ó, ú)." });
   }
 
-  if (nombre.length > 100) {
-    return res.status(400).json({ error: "El nombre excede la longitud máxima permitida (100 caracteres)." });
+  if (nombre.length > 50) {
+    return res.status(400).json({ error: "El nombre excede la longitud máxima permitida (50 caracteres)." });
   }
 
   if (!cantidadValidacion.test(cantidad)) {
@@ -81,8 +81,16 @@ async function createProduct(req, res) {
     return res.status(400).json({ error: "El stock mínimo solo permite números." });
   }
 
-  if (stock_minimo < 2) {
-    return res.status(400).json({ error: "El stock mínimo no puede ser menor a 5." });
+  if (stock_minimo < 1) {
+    return res.status(400).json({ error: "El stock mínimo no puede ser menor a 1." });
+  }
+
+  if (cantidad < 1 || cantidad > 100) {
+    return res.status(400).json({ error: "La cantidad mínimo no puede ser menor a 1 ni mayor a 100" });
+  }
+
+  if (stock_minimo > 50) {
+    return res.status(400).json({ error: "El stock mínimo no puede ser mayor a 50." });
   }
 
   const nombreExistente = await Producto.findOne({ where: { nombre } });
@@ -324,7 +332,6 @@ async function getProductosByCategoria(req, res) {
 
     res.json(productos);
   } catch (error) {
-    console.error('Error al obtener productos por categoría:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 }

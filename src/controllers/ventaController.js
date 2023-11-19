@@ -6,6 +6,7 @@ const Producto = require ('../models/producto')
 const Cliente = require('../models/cliente');
 const Abono = require('../models/abono');
 
+
 //definimos los estados permitidos tipo boolean
 const estadosPermitidos = [true, false];
 
@@ -325,19 +326,13 @@ async function abonosRelacionados(req, res) {
       where: { idventa: id }
     });
 
-    if (abonosRelacionados.length > 0) {
-      // Devolvemos la cantidad de abonos y la información adicional que necesites
-      return res.json({ tieneAbonos: true, cantidadAbonos: abonosRelacionados.length });
-    }
-
-    // Si no hay abonos relacionados, todo está bien
-    res.json({ tieneAbonos: false, cantidadAbonos: 0 });
+    // Devolvemos los abonos directamente
+    res.json(abonosRelacionados);
   } catch (error) {
     console.error('Error al verificar abonos relacionados:', error);
     res.status(500).json({ error: 'Error al verificar abonos relacionados.' });
   }
 }
-
 
 
 

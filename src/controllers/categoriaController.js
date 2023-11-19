@@ -64,19 +64,24 @@ async function createCategory(req, res) {
   const { nombre, descripcion, estado } = req.body;
 
   // Expresión regular para validar el nombre
-  const validacion = /^[a-zA-Z]+(\s[a-zA-Z]+)?$/;
+  const validacion =  /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
+  const validacionDescripcion =/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]+$/;
 
   // Validamos que el nombre cumpla con la expresión regular
   if (!validacion.test(nombre)) {
-    return res.status(400).json({ error: "El nombre solo puede contener letras." });
+    return res.status(400).json({ error: "El nombre solo acepta letras, espacios y letras con acentos (á, é, í, ó, ú)." });
   }
 
-  if (nombre.length > 100) {
-    return res.status(400).json({ error: "El nombre excede la longitud máxima permitida '100' " });
+  if (nombre.length > 50) {
+    return res.status(400).json({ error: "El nombre no puede superar los 50 caracteres. " });
   }
 
-  if (descripcion && descripcion.length > 100) {
-    return res.status(400).json({ error: "La descripción excede la longitud máxima permitida '100' " });
+  if (descripcion.length > 200) {
+    return res.status(400).json({ error: "La descripción no puede superar los 200 caracteres. " });
+  }
+
+  if(!validacionDescripcion.test(descripcion)) {
+    return res.status(400).json({ error: "La descripcion solo acepta letras, espacios, números y letras con acentos (á, é, í, ó, ú)." });
   }
 
   // Verificar si el nombre de la categoría ya existe

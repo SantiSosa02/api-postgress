@@ -3,6 +3,7 @@ const  Usuario  = require('../models/usuario');
 const nodemailer = require ('nodemailer') ;
 const jwt = require ('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { generarJWT } = require('../helpers/generar-jwt');
 
 
 const getAllUsers = async (req, res) => {
@@ -217,9 +218,12 @@ async function loginUser(req, res) {
       return res.status(401).json({ error: "Credenciales incorrectas." });
     }
 
+    const token  =await generarJWT(usuario.id)
+
     res.json({
       message: "Inicio de sesión exitoso.",
-      name: usuario.nombre
+      usuario,
+      token
     });
 
   } catch (error) {

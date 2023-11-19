@@ -65,6 +65,10 @@ const getInactivePayments =  async (req, res) => {
 async function createPayment(req, res) {
   const { idventa, fechaabono, valorabono, valorrestante, estado } = req.body;
 
+  if(valorabono < 1000 || valorabono > 2000000){
+    return res.status(400).json({ error: 'El abono no puede ser menor a 1.000 ni mayor a 2.000.000.' });
+  }
+
   try {
     // Obtener la venta asociada al idventa proporcionado
     const venta = await Venta.findByPk(idventa);

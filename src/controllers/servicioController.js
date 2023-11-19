@@ -60,13 +60,18 @@ async function createService(req, res) {
   const { nombre, descripcion, estado  } = req.body;
 
   const validacion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
+  const validacionDescripcion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]+$/;
 
   if(!validacion.test(nombre)){
     return res.status(400).json({error: "El nombre solo acepta letras, espacios y letras con acentos  (á, é, í, ó, ú)."})
   }
 
-  if( nombre.length > 100 ){
-    return res.status(400).json({error: "El nombre excede la longitud mixima permitida '100' "})
+  if(!validacionDescripcion.test(descripcion)){
+    return res.status(400).json({error: "La descripcion solo acepta letras, espacios, números y letras con acentos (á, é, í, ó, ú)."})
+  }
+
+  if( nombre.length > 50 ){
+    return res.status(400).json({error: "El nombre excede la longitud mixima permitida '50' "})
   }
 
   if( descripcion.length > 200 ){
@@ -95,12 +100,23 @@ async function updateService(req, res) {
   const { nombre, descripcion, estado } = req.body;
 
   const validacion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
+  const validacionDescripcion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]+$/;
 
   if(!validacion.test(nombre)){
     return res.status(400).json({error: "El nombre solo acepta letras, espacios y letras con acentos  (á, é, í, ó, ú)."})
   }
-  if( nombre.length > 100 ){
-    return res.status(400).json({error: "El nombre excede la longitud mixima permitida '100' "})
+
+  if(!validacionDescripcion.test(descripcion)){
+    return res.status(400).json({error: "La descripcion solo acepta letras, espacios, números y letras con acentos (á, é, í, ó, ú)."})
+  }
+
+  
+  if( descripcion.length > 200 ){
+    return res.status(400).json({error: "La descripción no debe superar los 200 caracteres. "})
+  }
+
+  if( nombre.length > 50 ){
+    return res.status(400).json({error: "El nombre excede la longitud mixima permitida '50' "})
   }
 
   try {

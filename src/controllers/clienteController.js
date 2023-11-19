@@ -61,24 +61,38 @@ async function createClient(req, res) {
   const { nombre, apellido, telefono, correo, estado  } = req.body;
 
    const validacion=/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
-   const validacionTelefono=  /^(0|[1-9][0-9]{0,9})$/;
+   const validacionTelefono=  /^[1-9][0-9]{9}$/;
    const validacionCorreo= /^[a-zA-Z0-9._%-ñÑáéíóúÁÉÍÓÚ]+@[a-zA-Z0-9.-]+\.(com|co|org|net|edu)$/;
 
   if(!validacion.test(nombre)){
     return res.status(400).json({error: "El nombre solo puede contener letras."})
   }
 
+  if(nombre > 50){
+    return res.status(400).json({error: "El nombre no puedo puede superar los 50 caracteres."})
+  }
+
   if(!validacion.test(apellido)){
     return res.status(400).json({error: "El apellido solo puede contener letras."})
   }
 
+  if(apellido > 50){
+    return res.status(400).json({error: "El apellido no puedo puede superar los 50 caracteres."})
+  }
+
+
   if(!validacionTelefono.test(telefono)){
-    return res.status(400).json({error: "El telefono debe tener 10 numeros"})
+    return res.status(400).json({error: "El telefono debe tener exactamente 10 dígitos."})
   }
 
   if(!validacionCorreo.test(correo)){
     return res.status(400).json({error: "El correo debe tener una estructura válida (usuario123@dominio.com)."})
   }
+
+  if(correo > 100){
+    return res.status(400).json({error: "El correo no puedo puede superar los 100 caracteres."})
+  }
+
 
   const correoExistente= await Cliente.findOne({where: {correo}});
 
@@ -112,7 +126,7 @@ async function updateClient(req, res) {
     return res.status(400).json({ error: 'Falta el ID del cliente en la solicitud.' });
   }
 
-  const validacion = /^[a-zA-Z]+(\s[a-zA-Z]+)?$/;
+  const validacion =/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
 
   if (!validacion.test(nombre)) {
     return res.status(400).json({ error: 'El nombre solo puede contener letras.' });
