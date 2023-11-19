@@ -318,7 +318,7 @@ async function forgotPassword(req, res) {
       from: 'visor6183@gmail.com',
       to: correo,
       subject: 'Recuperación de Contraseña',
-      text: `Haga clic en el siguiente enlace para restablecer su contraseña: https://proyecto-3592a.web.app/#/cambiar-contrasena/${resetToken}`,
+      text: `Haga clic en el siguiente enlace para restablecer su contraseña: https://proyecto-visor.web.app/#/cambiar-contrasena/${resetToken}`,
     };
 
     // Enviar correo con el enlace de restablecimiento de contraseña
