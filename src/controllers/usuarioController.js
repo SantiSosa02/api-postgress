@@ -270,8 +270,8 @@ function generateResetToken() {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'santi4586sosa@gmail.com',
-    pass: 'npme qidt ukzh uekk'
+    user: 'visor6183@gmail.com',
+    pass: 'xawg nhbz zesd spwf'
   }
 });
 
@@ -315,10 +315,10 @@ async function forgotPassword(req, res) {
 
     // Construye el objeto mailOptions con la información necesaria, incluyendo el token en el enlace
     const mailOptions = {
-      from: 'santi4586sosa@gmail.com',
+      from: 'visor6183@gmail.com',
       to: correo,
       subject: 'Recuperación de Contraseña',
-      text: `Haga clic en el siguiente enlace para restablecer su contraseña: http://localhost:4200/#/cambiar-contrasena/${resetToken}`,
+      text: `Haga clic en el siguiente enlace para restablecer su contraseña: https://proyecto-3592a.web.app/#/cambiar-contrasena/${resetToken}`,
     };
 
     // Enviar correo con el enlace de restablecimiento de contraseña
