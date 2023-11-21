@@ -22,7 +22,7 @@ const Usuario = sequelize.define('Usuario', {
       unique: true
     },
     contrasena: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     estado: {

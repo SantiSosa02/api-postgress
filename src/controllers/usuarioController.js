@@ -1,7 +1,6 @@
 // userController.js
 const  Usuario  = require('../models/usuario'); 
 const nodemailer = require ('nodemailer') ;
-const jwt = require ('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { generarJWT } = require('../helpers/generar-jwt');
 
@@ -100,7 +99,6 @@ async function createUser(req, res) {
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
 
-    // Aplica un hash a la contraseña con el salt
     const hash = bcrypt.hashSync(contrasena, salt);
     // Si el correo no existe, intenta crear el usuario
     const usuario = await Usuario.create({ nombre, apellido, correo, contrasena:hash, salt, estado });
