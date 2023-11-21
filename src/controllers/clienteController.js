@@ -93,19 +93,6 @@ async function createClient(req, res) {
     return res.status(400).json({error: "El correo no puedo puede superar los 100 caracteres."})
   }
 
-
-  const correoExistente= await Cliente.findOne({where: {correo}});
-
-  if(correoExistente){
-    return res.status(400).json({ error: "El correo ya esta en uso."})
-  }
-
-  const telefonoExistente = await Cliente.findOne({where: {telefono:telefono.toString()}});
-
-  if(telefonoExistente){
-    return res.status(400).json({error: "El telefono ya esta en uso"})
-  }
-
   try {
 
     const cliente = await Cliente.create({ nombre, apellido, telefono, correo, estado   });
@@ -113,7 +100,7 @@ async function createClient(req, res) {
     res.status(201).json({ status: 'success', message: 'Cliente creado con éxito', cliente });
   } catch (error) {
     // Manejar errores en la creación de categoría
-    console.error('Error al crear la categoría:', error);
+    console.error('Error al crear el cliente:', error);
     res.status(500).json({ error: 'Error al crear el cliente.' });
   }
 }

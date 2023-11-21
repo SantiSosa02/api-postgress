@@ -15,5 +15,7 @@ router.get('/categorias-activas', verificarToken,CategoryController.getActiveCat
 router.get('/categorias-inactivas',verificarToken, CategoryController.getInactiveCategory);
 router.get('/categorias-buscar',verificarToken,CategoryController.searchCategory);
 router.get('/categorias-nombre', verificarToken,CategoryController.verificarNombreExistente);
+router.get('/categorias/productos-relacionados/:id',verificarToken,CategoryController.productosAsociados);
+
 
 module.exports = router;

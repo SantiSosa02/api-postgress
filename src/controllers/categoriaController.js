@@ -1,5 +1,7 @@
 // categoryController.js
 const  Categoria  = require('../models/categoria');  
+const Producto = require('../models/producto');
+
 
 
 //otenemos todas las categorias
@@ -247,6 +249,33 @@ async function verificarNombreExistente(req, res) {
   }
 }
 
+async function productosAsociados(req, res) {
+  const { id } = req.params;
+
+  try {
+    // Buscamos la venta por ID
+    const categoria = await Categoria.findByPk(id);
+
+    // Verificar si la categoría fue encontrada
+    if (!categoria) {
+      return res.status(404).json({ error: 'Categoría no encontrada.' });
+    }
+
+    // Verificamos si hay abonos relacionados a la venta
+    const productosAsociados = await Producto.findAll({
+      where: { idcategoria: id }
+    });
+
+    // Devolver la cantidad de productos en lugar de true
+    res.json(productosAsociados);
+  } catch (error) {
+    console.error('Error al verificar si la categoría tiene productos asociados:', error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+}
+
+
+
 module.exports = {
     getAllCategories,
     getCategoryById,
@@ -257,5 +286,6 @@ module.exports = {
     getActiveCategory,
     getInactiveCategory,
     searchCategory,
-    verificarNombreExistente
+    verificarNombreExistente,
+    productosAsociados
 };

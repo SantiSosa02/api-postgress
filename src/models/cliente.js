@@ -39,7 +39,7 @@ const Cliente = sequelize.define('Cliente', {
     indexes: [
       {
         name: "cliente_correo_key",
-        unique: true,
+        unique: false,
         fields: [
           { name: "correo" },
         ]
@@ -53,7 +53,7 @@ const Cliente = sequelize.define('Cliente', {
       },
       {
         name: "cliente_telefono_key",
-        unique: true,
+        unique: false,
         fields: [
           { name: "telefono" },
         ]
