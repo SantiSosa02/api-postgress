@@ -9,12 +9,12 @@ const Servicio = sequelize.define('Servicio', {
       primaryKey: true
     },
     nombre: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false,
       unique: "servicio_nombre_key"
     },
     descripcion: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(200),
       allowNull: false
     },
     estado: {

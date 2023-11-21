@@ -9,11 +9,11 @@ const Usuario = sequelize.define('Usuario', {
       primaryKey: true
     },
     nombre: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     apellido: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     correo: {
@@ -22,7 +22,7 @@ const Usuario = sequelize.define('Usuario', {
       unique: true
     },
     contrasena: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     estado: {

@@ -9,15 +9,15 @@ const Cliente = sequelize.define('Cliente', {
       primaryKey: true
     },
     nombre: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     apellido: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     telefono: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(10),
       allowNull: false,
       unique: "cliente_telefono_key"
     },

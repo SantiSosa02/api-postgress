@@ -10,12 +10,12 @@ const Categoria = sequelize.define('Categoria', {
       primaryKey: true
     },
     nombre: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: false,
       unique: "categoria_nombre_key"
     },
     descripcion: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(200),
       allowNull: false
     },
     estado: {
