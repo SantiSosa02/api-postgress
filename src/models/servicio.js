@@ -44,4 +44,5 @@ const Servicio = sequelize.define('Servicio', {
       },
     ]
   });
+  
  module.exports = Servicio;

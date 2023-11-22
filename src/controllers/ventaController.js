@@ -93,14 +93,14 @@ async function createSale(req, res) {
   // Validaciones
   const validacionNumeroFactura = /^[0-9]+$/;
   const metodos_pago = ["Efectivo", "Transferencia"];
-  const estados_pago = ["Pagado", "Por pagos"];
+  const estados_pago = ["Contado", "Credito"];
 
   if (!metodos_pago.includes(metodopago)) {
     return res.status(400).json({ error: "Los métodos de pago son: Efectivo y Transferencia bancaria" });
   }
 
   if (!estados_pago.includes(estadopago)) {
-    return res.status(400).json({ error: "Los estados de pago son: Pagado y Por pagos" });
+    return res.status(400).json({ error: "Los estados de pago son: Contado y Credito" });
   }
 
   if (!validacionNumeroFactura.test(numerofactura)) {
