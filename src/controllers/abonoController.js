@@ -114,7 +114,7 @@ async function createPayment(req, res) {
     // Verificar si el valor restante total de la venta es igual a 0 y cambiar el estado de la venta
     if (valorRestante <= 0) {
       // Cambiar el estado de la venta a "Pagado"
-      await venta.update({ estadopago: 'Pagado' });
+      await venta.update({ estadopago: 'Credito' });
     }
 
     res.status(201).json(abono);
