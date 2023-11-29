@@ -8,6 +8,8 @@ const serviceRoutes = require('./src/routes/servicioRoutes')
 const productRoutes = require ('./src/routes/productoRoutes')
 const saleRoutes = require ('./src/routes/ventaRoutes')
 const paymetRoutes = require( './src/routes/abonoRoutes')
+const prediccionRoutes = require ('./src/routes/prediccionRoutes')
+
 
 const app = express();  
 app.use(cors());
@@ -31,6 +33,8 @@ app.use('/api', serviceRoutes);
 app.use('/api', productRoutes);
 app.use('/api', saleRoutes);
 app.use ('/api', paymetRoutes);
+app.use('/api', prediccionRoutes)
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
