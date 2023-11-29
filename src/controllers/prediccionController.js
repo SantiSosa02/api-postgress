@@ -12,9 +12,9 @@ const realizarPrediccion = (productos) => {
         fs.writeFileSync(archivoTemporal, productosJson);
 
         // Construir la ruta al script de Python
-        const rutaScriptPython = path.join('E:', '6toTrimestre', 'Machine learning', 'prediccion', 'prediccion2', 'prediccion.py');
+        const rutaScriptPython = path.join('E:', '6toTrimestre', 'Machine learning', 'prediccion', 'prediccion-visor', 'prediccion.py');
 
-        // Ejecutar el script de Python pasando la ruta del archivo temporal como argumento
+        // Ejecutar el script de Python leyendo el contenido del archivo temporal
         const comando = `python "${rutaScriptPython}" "${archivoTemporal}"`;
         const resultadoPrediccion = execSync(comando, { encoding: 'utf-8' });
 
