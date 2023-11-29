@@ -2,25 +2,26 @@ const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const axios = require('axios');
-
-const realizarPrediccion = async (productos) => {
+const realizarPrediccion = (productos) => {
     try {
         // Convertir productos a cadena JSON válida
         const productosJson = JSON.stringify(productos);
 
-        // Hacer una solicitud POST a la URL del servicio en Render
-        const response = await axios.post('https://ultimaprediccion.onrender.com/realizar-prediccion', {
-            productos: JSON.parse(productosJson), // Enviar los productos como parte del cuerpo de la solicitud
-        });
+        // Crear un archivo temporal para almacenar la cadena JSON
+        const archivoTemporal = path.join(__dirname, 'productos_temporal.json');
+        fs.writeFileSync(archivoTemporal, productosJson);
 
-        // Obtener el resultado de la predicción desde la respuesta
-        const resultadoPrediccion = response.data;
+        // Construir la ruta al script de Python
+        const rutaScriptPython = path.join('E:', '6toTrimestre', 'Machine learning', 'prediccion', 'prediccion2', 'prediccion.py');
 
-        console.log('Resultado de la predicción:', resultadoPrediccion);
+        // Ejecutar el script de Python pasando la ruta del archivo temporal como argumento
+        const comando = `python "${rutaScriptPython}" "${archivoTemporal}"`;
+        const resultadoPrediccion = execSync(comando, { encoding: 'utf-8' });
+
+        console.log('Resultado de la predicción:', resultadoPrediccion.trim());
 
         // Devolver el resultado de la predicción
-        return resultadoPrediccion;
+        return JSON.parse(resultadoPrediccion.trim());
     } catch (error) {
         console.error('Error al realizar la predicción:', error);
         throw new Error('Error al realizar la predicción');
