@@ -11,5 +11,7 @@ router.put('/abonos/:id',verificarToken, PaymentController.updatePaymentState)
 router.get('/abonos-activos',verificarToken, PaymentController.getActivePayments);
 router.get('/abonos-inactivos',verificarToken, PaymentController.getInactivePayments);
 router.get('/abonos-buscar',verificarToken, PaymentController.searchPayment);
+router.get('/abonos-venta/:idventa', PaymentController.getPaymentsByVentaId);
+
 
 module.exports = router;

@@ -207,12 +207,49 @@ async function updatePaymentState(req, res) {
     }
   }
 
+  // Añade este método al final de tu controlador
+
+async function getPaymentsByVentaId(req, res) {
+  const { idventa } = req.params;
+
+  try {
+    // Verifica si el idventa proporcionado es un número válido
+    const cantidadValidacion = /^[0-9]+$/;
+    if (!cantidadValidacion.test(idventa)) {
+      return res.status(400).json({ error: "El id de la venta solo permite números." });
+    }
+
+    // Busca la venta por id
+    const venta = await Venta.findByPk(idventa);
+
+    if (!venta) {
+      return res.status(404).json({ error: 'Venta no encontrada.' });
+    }
+
+    // Busca los abonos asociados a la venta
+    const abonos = await Abono.findAll({
+      where: { idventa },
+    });
+
+    if (abonos.length === 0) {
+      return res.status(404).json({ message: 'No hay abonos registrados para esta venta.' });
+    }
+
+    res.json(abonos);
+  } catch (error) {
+    console.error('Error al obtener los abonos por venta:', error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+}
+
 module.exports = {
-   getAllPayments,
-   getPaymentById,
-   createPayment,
-   updatePaymentState,
-   getActivePayments,
-   getInactivePayments,
-   searchPayment
+  getAllPayments,
+  getPaymentById,
+  createPayment,
+  updatePaymentState,
+  getActivePayments,
+  getInactivePayments,
+  searchPayment,
+  getPaymentsByVentaId, 
+  getPaymentsByVentaId
 };
