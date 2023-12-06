@@ -28,10 +28,6 @@ const DetalleVentaServicio = sequelize.define('DetalleVentaServicio', {
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    descripcion: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
   }, {
     sequelize,
     tableName: 'detalleventaservicio',

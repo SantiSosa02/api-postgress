@@ -96,7 +96,7 @@ async function createSale(req, res) {
   const estados_pago = ["Contado", "Credito"];
 
   if (!metodos_pago.includes(metodopago)) {
-    return res.status(400).json({ error: "Los métodos de pago son: Efectivo y Transferencia bancaria" });
+    return res.status(400).json({ error: "Los métodos de pago son: Efectivo y Transferencia" });
   }
 
   if (!estados_pago.includes(estadopago)) {
@@ -181,15 +181,12 @@ async function createSale(req, res) {
     // Crear detalles de servicios
     await Promise.all(
       detalleServicios.map(async (detalleServicio) => {
-        if (detalleServicio.descripcion.length > 100) {
-          throw new Error("La descripción excede la longitud máxima permitida (100)");
-        }
-
         await DetalleVentaServicio.create({
           idventa: venta.idventa,
           idservicio: detalleServicio.idservicio,
           precio: detalleServicio.precio,
-          descripcion: detalleServicio.descripcion
+          // Elimina la siguiente línea para no enviar la descripción
+          // descripcion: detalleServicio.descripcion
         });
       })
     );
@@ -198,7 +195,7 @@ async function createSale(req, res) {
   } catch (error) {
     console.error('Error al crear la venta:', error.message);
     console.error('Detalles:', error);
-    res.status(400).json({ error: 'Error al crear la venta.' });
+    res.status(400).json({ error: 'Error al crear la venta. Detalles: ' + error.message });
   }
 }
 
