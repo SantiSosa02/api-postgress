@@ -218,7 +218,7 @@ async function loginUser(req, res) {
 
     const token  =await generarJWT(usuario.id)
 
-    res.status(200).json({
+    res.json({
       message: "Inicio de sesión exitoso.",
       usuario,
       token
