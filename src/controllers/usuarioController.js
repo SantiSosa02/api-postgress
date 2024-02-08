@@ -202,7 +202,7 @@ async function loginUser(req, res) {
     const usuario = await Usuario.findOne({ where: { correo } });
 
     if (!usuario) {
-      return res.status(401).json({ error: "Credenciales incorrectas." });
+      return res.status(404).json({ error: "El usuario no está registrado." });
     }
 
     if (usuario.estado === false) {
@@ -216,7 +216,7 @@ async function loginUser(req, res) {
       return res.status(401).json({ error: "Credenciales incorrectas." });
     }
 
-    const token  =await generarJWT(usuario.id)
+    const token = await generarJWT(usuario.id);
 
     res.json({
       message: "Inicio de sesión exitoso.",
@@ -229,6 +229,7 @@ async function loginUser(req, res) {
     res.status(500).json({ error: "Error al iniciar sesión." });
   }
 }
+
 
 
 async function updateUserState(req, res) {
