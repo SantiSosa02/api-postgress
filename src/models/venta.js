@@ -37,6 +37,10 @@ const Venta = sequelize.define('Venta', {
       type: DataTypes.STRING(100),
       allowNull: false
     },
+    tipopago: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     valortotal: {
       type: DataTypes.DOUBLE,
       allowNull: false

@@ -88,19 +88,24 @@ const getInactiveSales = async (req, res) => {
 
 //creamos una venta
 async function createSale(req, res) {
-  const { idcliente, numerofactura, fecha, metodopago, valortotal, estado, estadopago, detalleProductos, detalleServicios } = req.body;
+  const { idcliente, numerofactura, fecha, metodopago, tipopago, valortotal, estado, estadopago, detalleProductos, detalleServicios } = req.body;
 
   // Validaciones
   const validacionNumeroFactura = /^[0-9]+$/;
   const metodos_pago = ["Efectivo", "Transferencia"];
-  const estados_pago = ["Contado", "Credito"];
+  const estados_pago = ["Pendiente", "En proceso", "Pagado"];
+  const tipo_pago = ["Contado", "Credito"]
 
   if (!metodos_pago.includes(metodopago)) {
     return res.status(400).json({ error: "Los métodos de pago son: Efectivo y Transferencia" });
   }
 
   if (!estados_pago.includes(estadopago)) {
-    return res.status(400).json({ error: "Los estados de pago son: Contado y Credito" });
+    return res.status(400).json({ error: "Los estados de pago son: Pendiente, En proceso y Pagado" });
+  }
+
+  if (!tipo_pago.includes(tipopago)) {
+    return res.status(400).json({ error: "Los tipos de pago son: Contado y Credito" });
   }
 
   if (!validacionNumeroFactura.test(numerofactura)) {
@@ -151,6 +156,7 @@ async function createSale(req, res) {
       fecha: fechaActual,
       metodopago,
       estadopago,
+      tipopago,
       valortotal: valortotal_venta,
       estado
     });
