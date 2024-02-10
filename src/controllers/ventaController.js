@@ -329,13 +329,8 @@ async function abonosRelacionados(req, res) {
       where: { idventa: id }
     });
 
-    // Si hay abonos relacionados, actualizamos el estado de la venta a 'En proceso'
-    if (abonosRelacionados.length > 0) {
-      await venta.update({ estadopago: 'En proceso' });
-    }
-
-    // Devolvemos un booleano indicando si hay abonos relacionados o no, junto con los abonos encontrados
-    res.json({ tieneAbonosRelacionados: abonosRelacionados.length > 0, abonosRelacionados });
+    // Devolvemos los abonos directamente
+    res.json(abonosRelacionados);
   } catch (error) {
     console.error('Error al verificar abonos relacionados:', error);
     res.status(500).json({ error: 'Error al verificar abonos relacionados.' });
