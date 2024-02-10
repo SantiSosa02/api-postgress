@@ -114,7 +114,7 @@ async function createPayment(req, res) {
     // Verificar si el valor restante total de la venta es igual a 0 y cambiar el estado de la venta
     if (valorRestante <= 0) {
       // Cambiar el estado de la venta a "Pagado"
-      await venta.update({ estadopago: 'Credito' });
+      await venta.update({ estadopago: 'Pagado' });
     }
 
     res.status(201).json(abono);
@@ -208,46 +208,40 @@ async function updatePaymentState(req, res) {
   }
 
   // Añade este método al final de tu controlador
-  async function getPaymentsByVentaId(req, res) {
-    const { idventa } = req.params;
-  
-    try {
-      // Verifica si el idventa proporcionado es un número válido
-      const cantidadValidacion = /^[0-9]+$/;
-      if (!cantidadValidacion.test(idventa)) {
-        return res.status(400).json({ error: "El id de la venta solo permite números." });
-      }
-  
-      // Busca la venta por id
-      const venta = await Venta.findByPk(idventa);
-  
-      if (!venta) {
-        return res.status(404).json({ error: 'Venta no encontrada.' });
-      }
-  
-      // Busca los abonos asociados a la venta
-      const abonos = await Abono.findAll({
-        where: { idventa },
-      });
-  
-      if (abonos.length === 0) {
-        return res.status(404).json({ message: 'No hay abonos registrados para esta venta.' });
-      }
-  
-      // Verificar si la suma de los abonos es igual al valor total de la venta
-      const sumaAbonos = abonos.reduce((total, abono) => total + abono.valorabono, 0);
-      if (sumaAbonos === venta.valortotal) {
-        // Cambiar el estado de la venta a "Pagado"
-        await venta.update({ estadopago: 'Pagado' });
-      }
-  
-      res.json(abonos);
-    } catch (error) {
-      console.error('Error al obtener los abonos por venta:', error);
-      res.status(500).json({ error: 'Error interno del servidor.' });
+
+async function getPaymentsByVentaId(req, res) {
+  const { idventa } = req.params;
+
+  try {
+    // Verifica si el idventa proporcionado es un número válido
+    const cantidadValidacion = /^[0-9]+$/;
+    if (!cantidadValidacion.test(idventa)) {
+      return res.status(400).json({ error: "El id de la venta solo permite números." });
     }
+
+    // Busca la venta por id
+    const venta = await Venta.findByPk(idventa);
+
+    if (!venta) {
+      return res.status(404).json({ error: 'Venta no encontrada.' });
+    }
+
+    // Busca los abonos asociados a la venta
+    const abonos = await Abono.findAll({
+      where: { idventa },
+    });
+
+    if (abonos.length === 0) {
+      return res.status(404).json({ message: 'No hay abonos registrados para esta venta.' });
+    }
+
+    res.json(abonos);
+  } catch (error) {
+    console.error('Error al obtener los abonos por venta:', error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
   }
-  
+}
+
 module.exports = {
   getAllPayments,
   getPaymentById,
