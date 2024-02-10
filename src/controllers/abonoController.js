@@ -251,5 +251,4 @@ module.exports = {
   getInactivePayments,
   searchPayment,
   getPaymentsByVentaId, 
-  getPaymentsByVentaId
 };
