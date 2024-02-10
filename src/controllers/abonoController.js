@@ -65,7 +65,7 @@ const getInactivePayments =  async (req, res) => {
 async function createPayment(req, res) {
   const { idventa, fechaabono, valorabono, valorrestante, estado } = req.body;
 
-  if(valorabono < 1000 || valorabono > 2000000){
+  if (valorabono < 1000 || valorabono > 2000000) {
     return res.status(400).json({ error: 'El abono no puede ser menor a 1.000 ni mayor a 2.000.000.' });
   }
 
@@ -96,7 +96,7 @@ async function createPayment(req, res) {
       return res.status(400).json({ error: 'El abono excede el valor restante de la venta.' });
     }
 
-    const feachaActual =new Date().toISOString().split('T')[0];
+    const feachaActual = new Date().toISOString().split('T')[0];
 
     // Actualizar el valor restante en la venta
     valorRestante -= valorabono;
@@ -115,6 +115,9 @@ async function createPayment(req, res) {
     if (valorRestante <= 0) {
       // Cambiar el estado de la venta a "Pagado"
       await venta.update({ estadopago: 'Pagado' });
+    } else {
+      // Si no es igual a cero, el estado de la venta debe ser "En proceso" según tu lógica
+      await venta.update({ estadopago: 'En proceso' });
     }
 
     res.status(201).json(abono);
@@ -123,6 +126,7 @@ async function createPayment(req, res) {
     console.error('Error al crear el abono:', error);
   }
 }
+
 
 
 async function updatePaymentState(req, res) {
