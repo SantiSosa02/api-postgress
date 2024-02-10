@@ -337,6 +337,13 @@ async function abonosRelacionados(req, res) {
       venta.estadopago = 'En proceso';
     }
 
+    // Si la cantidad de abonos relacionados es igual al valor total de la venta, cambiar el estado a 'Pagado'
+    const totalAbonos = abonosRelacionados.reduce((total, abono) => total + abono.valorabono, 0);
+    if (totalAbonos === venta.valortotal) {
+      await venta.update({ estadopago: 'Pagado' });
+      venta.estadopago = 'Pagado';
+    }
+
     // Devolvemos un booleano indicando si hay abonos relacionados o no, junto con los abonos encontrados
     res.json({ tieneAbonosRelacionados: abonosRelacionados.length > 0, abonosRelacionados, venta });
   } catch (error) {
