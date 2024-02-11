@@ -337,7 +337,31 @@ async function abonosRelacionados(req, res) {
   }
 }
 
+async function guardarObservacionVenta(req, res) {
+  const { id } = req.params; // Obtén el ID de la venta de los parámetros de la solicitud
+  const { observacion } = req.body; // Obtén la observación del cuerpo de la solicitud
 
+  try {
+    // Busca la venta por su ID
+    const venta = await Venta.findByPk(id);
+
+    // Si no se encuentra la venta, devuelve un error
+    if (!venta) {
+      return res.status(404).json({ error: 'Venta no encontrada.' });
+    }
+
+    // Guarda la observación en la venta
+    venta.observacion = observacion;
+    await venta.save();
+
+    // Si la observación se guarda correctamente, devuelve una respuesta exitosa
+    res.status(200).json({ message: 'Observación guardada correctamente.' });
+  } catch (error) {
+    // Si ocurre algún error, devuelve un error interno del servidor
+    console.error('Error al guardar la observación de la venta:', error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+}
 
 module.exports = {
     getAllSales,
@@ -347,6 +371,7 @@ module.exports = {
     getActiveSales,
     getInactiveSales,
     searchSale,
-    abonosRelacionados
+    abonosRelacionados,
+    guardarObservacionVenta
 
 };
