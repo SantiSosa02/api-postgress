@@ -47,7 +47,7 @@ const Venta = sequelize.define('Venta', {
     },
     observacion: {
       type: DataTypes.STRING(200),
-      allowNull: false
+      allowNull: true
     },
     estado: {
       type: DataTypes.BOOLEAN,

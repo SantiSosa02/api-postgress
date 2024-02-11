@@ -157,7 +157,7 @@ async function createSale(req, res) {
       metodopago,
       estadopago,
       tipopago,
-      observacion:null,
+      observacion:'',
       valortotal: valortotal_venta,
       estado
     });
