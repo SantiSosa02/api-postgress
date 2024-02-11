@@ -88,7 +88,7 @@ const getInactiveSales = async (req, res) => {
 
 //creamos una venta
 async function createSale(req, res) {
-  const { idcliente, numerofactura, fecha, metodopago, tipopago, valortotal, estado, estadopago, detalleProductos, detalleServicios } = req.body;
+  const { idcliente, numerofactura, fecha, metodopago, tipopago,observacion, valortotal, estado, estadopago, detalleProductos, detalleServicios } = req.body;
 
   // Validaciones
   const validacionNumeroFactura = /^[0-9]+$/;
@@ -157,6 +157,7 @@ async function createSale(req, res) {
       metodopago,
       estadopago,
       tipopago,
+      observacion:null,
       valortotal: valortotal_venta,
       estado
     });
