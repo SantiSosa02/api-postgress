@@ -14,6 +14,8 @@ router.get('/ventas-inactivas',verificarToken, SaleController.getInactiveSales);
 router.get('/ventas-buscar',verificarToken, SaleController.searchSale);
 router.get('/ventas/abonos-relacionados/:id', verificarToken,SaleController.abonosRelacionados);
 router.put('/ventas/observacion/:id', verificarToken,SaleController.guardarObservacionVenta);
+router.get('/ventas/ver-observacion/:id', verificarToken,SaleController.getObservacionId);
+
 
 
 
