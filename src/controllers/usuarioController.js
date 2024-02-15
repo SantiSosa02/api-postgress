@@ -304,7 +304,7 @@ async function forgotPassword(req, res) {
     const usuario = await Usuario.findOne({ where: { correo } });
 
     if (!usuario) {
-      return res.status(404).json({ error: 'El usuario no esta registrado.' });
+      return res.status(404).json({ error: 'El usuario no esta registrado' });
     }
 
     // Genera un token único para el restablecimiento de contraseña
