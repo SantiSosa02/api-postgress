@@ -333,7 +333,7 @@ async function forgotPassword(req, res) {
           <a href="https://proyecto-visor.web.app/#/cambiar-contrasena/${resetToken}">Enlace para restablecer la contraseña</a>
           <p>Porfa favor, utilice este enlace para restablecer su contraseña y poder acceder al aplicativo con su cuenta.</p>
           <p>Si usted no solicitud el enlace para recuperar la contraseña, ignore este correo</p>
-          <img src="img/VISOR 1.png" alt="Logotipo" style="width: 100px; border-radius: 50%;>
+          <img src="https://lh4.googleusercontent.com/GvzYgvRLDtrJETzgkQrxhGpRjD8Sr_ao-zOk_SbKqOExGdp2zgb8-EQmlSmZDt7TtltGUcn-Z4XvJ9BqkFfyhQ=w1280" alt="Logotipo" style="width: 100px; border-radius: 50%;>
 
         </div>
       `
