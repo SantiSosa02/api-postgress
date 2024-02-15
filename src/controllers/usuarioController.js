@@ -314,13 +314,30 @@ async function forgotPassword(req, res) {
     resetTokens[resetToken] = usuario;
 
     // Construye el objeto mailOptions con la información necesaria, incluyendo el token en el enlace
+    // const mailOptions = {
+    //   from: 'visor6183@gmail.com',
+    //   to: correo,
+    //   subject: 'Recuperación de Contraseña',
+    //   text: `Haga clic en el siguiente enlace para restablecer su contraseña: https://proyecto-visor.web.app/#/cambiar-contrasena/${resetToken}`,
+    // };
+
     const mailOptions = {
       from: 'visor6183@gmail.com',
       to: correo,
       subject: 'Recuperación de Contraseña',
-      text: `Haga clic en el siguiente enlace para restablecer su contraseña: https://proyecto-visor.web.app/#/cambiar-contrasena/${resetToken}`,
-    };
+      html: `
+        <div>
+          <p>Estimado(a) Usuario.</p>
+          <p>Recibimos una solicitud de recuperación de contraseña en nuestro sistema.</p>
+          <p>A continuación de le proporciona un enlace de recuperación.</p>
+          <a href="https://proyecto-visor.web.app/#/cambiar-contrasena/${resetToken}">Enlace para restablecer la contraseña</a>
+          <p>Porfa favor, utilice este enlace para restablecer su contraseña y poder acceder al aplicativo con su cuenta.</p>
+          <p>Si usted no solicitud el enlace para recuperar la contraseña, ignore este correo</p>
+          <img src="img/VISOR 1.png" alt="Logotipo" style="width: 100px; border-radius: 50%;>
 
+        </div>
+      `
+    };
     // Enviar correo con el enlace de restablecimiento de contraseña
     await sendEmail(correo, mailOptions);
 
