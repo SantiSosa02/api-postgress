@@ -1,6 +1,6 @@
 // userController.js
-const  Usuario  = require('../models/usuario'); 
-const nodemailer = require ('nodemailer') ;
+const Usuario = require('../models/usuario');
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const { generarJWT } = require('../helpers/generar-jwt');
 
@@ -9,7 +9,7 @@ const getAllUsers = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll();  // Aquí es donde se produce el error
 
-    if (usuarios.length === 0 ){
+    if (usuarios.length === 0) {
 
     }
     res.json(usuarios);
@@ -33,31 +33,31 @@ async function getUserById(req, res) {
   }
 }
 
-const getActiveUsers =  async (req, res) => {
-  try{
-     const usuarios =  await Usuario.findAll({where : {estado: true}});
+const getActiveUsers = async (req, res) => {
+  try {
+    const usuarios = await Usuario.findAll({ where: { estado: true } });
 
-     if (usuarios.length === 0 ){
-      return res.status(400).json({error : "No hay usuarios activos"});
-     }
-     res.json(usuarios);
-  }catch{
+    if (usuarios.length === 0) {
+      return res.status(400).json({ error: "No hay usuarios activos" });
+    }
+    res.json(usuarios);
+  } catch {
     console.error(error);
-    res.status(500).json({error: "Error al obtener los usuarios activos"})
+    res.status(500).json({ error: "Error al obtener los usuarios activos" })
   }
 }
 
-const getInactiveUsers =  async (req, res) => {
-  try{
-     const usuarios =  await Usuario.findAll({where : {estado: false}});
+const getInactiveUsers = async (req, res) => {
+  try {
+    const usuarios = await Usuario.findAll({ where: { estado: false } });
 
-     if (usuarios.length === 0 ){
-      return res.status(400).json({error : "No hay usuarios inactivos"});
-     }
-     res.json(usuarios);
-  }catch{
+    if (usuarios.length === 0) {
+      return res.status(400).json({ error: "No hay usuarios inactivos" });
+    }
+    res.json(usuarios);
+  } catch {
     console.error(error);
-    res.status(500).json({error: "Error al obtener los usuarios inactivos"})
+    res.status(500).json({ error: "Error al obtener los usuarios inactivos" })
   }
 }
 
@@ -101,8 +101,8 @@ async function createUser(req, res) {
 
     const hash = bcrypt.hashSync(contrasena, salt);
     // Si el correo no existe, intenta crear el usuario
-    const usuario = await Usuario.create({ nombre, apellido, correo, contrasena:hash, salt, estado });
-  
+    const usuario = await Usuario.create({ nombre, apellido, correo, contrasena: hash, salt, estado });
+
     // Devuelve una respuesta exitosa
     res.status(201).json({ status: 'success', message: 'Registro exitoso', usuario });
   } catch (error) {
@@ -115,15 +115,15 @@ async function updateUser(req, res) {
   const { id } = req.params;
   const { nombre, apellido, correo, contrasena, estado } = req.body;
 
-  const validacion= /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
-  const validacionCorreo=/^[a-zA-Z0-9._%-ñÑáéíóúÁÉÍÓÚ]+@[a-zA-Z0-9.-]+\.(com|co|org|net|edu)$/;
+  const validacion = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/;
+  const validacionCorreo = /^[a-zA-Z0-9._%-ñÑáéíóúÁÉÍÓÚ]+@[a-zA-Z0-9.-]+\.(com|co|org|net|edu)$/;
 
-  if(!validacion.test(nombre)){
-    return res.status(400).json({error: "El nombre solo puede contener letras."})
+  if (!validacion.test(nombre)) {
+    return res.status(400).json({ error: "El nombre solo puede contener letras." })
   }
 
-  if(!validacion.test(apellido)){
-    return res.status(400).json({error: "El apellido solo puede contener letras."})
+  if (!validacion.test(apellido)) {
+    return res.status(400).json({ error: "El apellido solo puede contener letras." })
   }
 
   try {
@@ -133,42 +133,42 @@ async function updateUser(req, res) {
       return res.status(404).json({ error: 'Usuario no encontrado.' });
     }
 
-      // Actualiza solo el campo nombre si se proporciona un nuevo valor
-      if (nombre) {
-        usuario.nombre = nombre;
-      }
-  
-      // Actualiza otros campos si se proporcionan nuevos valores
-      if (apellido) {
-        usuario.apellido = apellido;
-      }
-  
-      if (correo !== undefined) {
-        // Se proporcionó un valor para 'correo', entonces realizamos la validación.
-        if (correo !== usuario.correo) {
-          const existingUser = await Usuario.findOne({ where: { correo } });
-          if (existingUser) {
-            return res.status(400).json({ error: 'El nuevo correo ya está en uso por otro usuario.' });
-          }
-          if (!validacionCorreo.test(correo)) {
-            return res.status(400).json({ error: "El correo debe tener una estructura válida." });
-          }
-          usuario.correo = correo;
+    // Actualiza solo el campo nombre si se proporciona un nuevo valor
+    if (nombre) {
+      usuario.nombre = nombre;
+    }
+
+    // Actualiza otros campos si se proporcionan nuevos valores
+    if (apellido) {
+      usuario.apellido = apellido;
+    }
+
+    if (correo !== undefined) {
+      // Se proporcionó un valor para 'correo', entonces realizamos la validación.
+      if (correo !== usuario.correo) {
+        const existingUser = await Usuario.findOne({ where: { correo } });
+        if (existingUser) {
+          return res.status(400).json({ error: 'El nuevo correo ya está en uso por otro usuario.' });
         }
+        if (!validacionCorreo.test(correo)) {
+          return res.status(400).json({ error: "El correo debe tener una estructura válida." });
+        }
+        usuario.correo = correo;
       }
-      
-  
-      if (contrasena) {
-        usuario.contrasena = contrasena;
-      }
-  
-      if (estado !== undefined) {
-        usuario.estado = estado;
-      }
-  
-      // Guarda los cambios
-      await usuario.save();
-    
+    }
+
+
+    if (contrasena) {
+      usuario.contrasena = contrasena;
+    }
+
+    if (estado !== undefined) {
+      usuario.estado = estado;
+    }
+
+    // Guarda los cambios
+    await usuario.save();
+
     res.json(usuario);
   } catch (error) {
     console.log(error);
@@ -179,19 +179,19 @@ async function updateUser(req, res) {
 async function deleteUser(req, res) {
   const { id } = req.params;
 
-  try{
-    const usuario= await Usuario.findByPk(id);
+  try {
+    const usuario = await Usuario.findByPk(id);
 
-    if(!usuario){
-      return res.status(404).json({error: "Usuario no encontrado"})
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" })
     }
 
     await usuario.destroy();
 
 
     res.status(204).send(usuario);
-  }catch(error){
-    res.status(500).json({error : "Error al eliminar el usuario."})
+  } catch (error) {
+    res.status(500).json({ error: "Error al eliminar el usuario." })
   }
 }
 
@@ -294,7 +294,7 @@ async function sendEmail(correo, mailOptions) {
   }
 }
 
-let resetTokens = {}; 
+let resetTokens = {};
 
 async function forgotPassword(req, res) {
   const { correo } = req.body;
@@ -330,10 +330,10 @@ async function forgotPassword(req, res) {
           <p>Estimado(a) Usuario.</p>
           <p>Recibimos una solicitud de recuperación de contraseña en nuestro sistema.</p>
           <p>A continuación de le proporciona un enlace de recuperación.</p>
-          <a href="https://proyecto-visor.web.app/#/cambiar-contrasena/${resetToken}">Enlace para restablecer la contraseña</a>
+          <a href="https://proyecto-visor.web.app/#/cambiar-contrasena/${resetToken}" style="font-size:15px">Enlace para restablecer la contraseña</a>
           <p>Porfa favor, utilice este enlace para restablecer su contraseña y poder acceder al aplicativo con su cuenta.</p>
           <p>Si usted no solicitud el enlace para recuperar la contraseña, ignore este correo</p>
-          <img src="https://lh4.googleusercontent.com/GvzYgvRLDtrJETzgkQrxhGpRjD8Sr_ao-zOk_SbKqOExGdp2zgb8-EQmlSmZDt7TtltGUcn-Z4XvJ9BqkFfyhQ=w1280" alt="Logotipo" style="width: 100px; border-radius: 50%;>
+          <img src="https://lh5.googleusercontent.com/TNbebGNsb_1zCC14oTzBVfByxbe4HQKOPv9YjKuERCG3t9-PB2mQ0lymfwvaSLnYjDQ4Su6gHjAuBmqEcvG9wg=w1280" alt="Logotipo" style="width: 100px; border-radius: 50%;>
 
         </div>
       `
@@ -353,7 +353,7 @@ async function changePassword(req, res) {
   const { newPassword } = req.body;
 
   try {
-    
+
     // Busca al usuario por el token de reseteo
     const usuario = resetTokens[token];
 
