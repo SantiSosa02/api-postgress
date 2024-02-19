@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const { generarJWT, REFRESH_WINDOW } = require('../helpers/generar-jwt'); // Importa la función de generarJWT y REFRESH_WINDOW
-
 require('dotenv').config();
 
 async function verificarToken(req, res, next) {

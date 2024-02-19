@@ -21,7 +21,7 @@ const generarJWT = (id = '') => {
 }
 
 const refrescarJWT = (id = '') => {
-    console.log("Token refrescaod")
+    print("Token refrescaod")
     return generarJWT(id);
 
 }
