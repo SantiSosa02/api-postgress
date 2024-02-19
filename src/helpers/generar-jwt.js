@@ -1,25 +1,33 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+const REFRESH_WINDOW = 60; // 30 minutos en segundos
+
 const generarJWT = (id = '') => {
-
-    return new Promise( (resolve, reject) => {
-
+    return new Promise((resolve, reject) => {
         const payload = { id }
 
-        jwt.sign(payload , process.env.SECRETORPRIVATEKEY ,{
-            expiresIn:'4h'
-        }, (err, token)=>{
-            if(err){
+        jwt.sign(payload, process.env.SECRETORPRIVATEKEY, {
+            expiresIn: '2m'
+        }, (err, token) => {
+            if (err) {
                 console.log(err);
-                reject('No se puedo generar el toekn')
-            }else{
-                resolve(token)
+                reject('No se pudo generar el token');
+            } else {
+                resolve(token);
             }
         })
     })
 }
 
-module.exports= {
-    generarJWT
+const refrescarJWT = (id = '') => {
+    console.log("Token refrescaod")
+    return generarJWT(id);
+
+}
+
+module.exports = {
+    generarJWT,
+    refrescarJWT,
+    REFRESH_WINDOW
 }
