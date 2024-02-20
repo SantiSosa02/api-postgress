@@ -331,6 +331,8 @@ async function forgotPassword(req, res) {
           <p>Recibimos una solicitud de recuperación de contraseña en nuestro sistema.</p>
           <p>A continuación de le proporciona un enlace de recuperación.</p>
           <a href="https://proyecto-visor.web.app/#/cambiar-contrasena/${resetToken}" style="font-size:15px">Enlace para restablecer la contraseña</a>
+          <a href="http://http://localhost:4200/#/cambiar-contrasena/${resetToken}" style="font-size:15px">Enlace para restablecer la contraseña</a>
+
           <p>Porfa favor, utilice este enlace para restablecer su contraseña y poder acceder al aplicativo con su cuenta.</p>
           <p>Si usted no solicitud el enlace para recuperar la contraseña, ignore este correo</p>
           <img src="https://static.wixstatic.com/media/d13569_0a9373901bbf4c8086862cb3d9cee4b7~mv2.png/v1/fill/w_500,h_500,al_c,q_85,enc_auto/VISOR%201.png" alt="Logotipo"
