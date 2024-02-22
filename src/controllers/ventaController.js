@@ -65,7 +65,6 @@ const getActiveSales = async (req, res) => {
     }
     res.json(ventas);
   } catch (error) {
-    console.error('Error fetching sales:', error);
     res.status(500).json({ error: 'Error al obtener las ventas activas' });
   }
 };
@@ -81,7 +80,6 @@ const getInactiveSales = async (req, res) => {
     }
     res.json(ventas);
   } catch (error) {
-    console.error('Error fetching sales:', error);
     res.status(500).json({ error: 'Error al obtener las ventas inactivas' });
   }
 };
