@@ -151,7 +151,7 @@ async function createSale(req, res) {
     const venta = await Venta.create({
       idcliente,
       numerofactura,
-      fecha,
+      fecha: fechaActual,
       metodopago,
       estadopago,
       tipopago,
