@@ -35,7 +35,7 @@ const getActiveProducts =  async (req, res) => {
      const productos =  await Producto.findAll({where : {estado: true}});
 
      if (productos.length === 0 ){
-      return res.status(400).json({error : "No hay productos activos"});
+      return res.status(500).json({error : "No hay productos activos"});
      }
      res.json(productos);
   }catch{
