@@ -38,7 +38,7 @@ const getActiveCategory =  async (req, res) => {
      const categorias =  await Categoria.findAll({where : {estado: true}});
 
      if (categorias.length === 0 ){
-      return res.status(404).json({error : "No hay categorias activas"});
+      return res.status(400).json({error : "No hay categorias activas"});
      }
      res.json(categorias);
   }catch{
