@@ -42,7 +42,6 @@ const getActiveCategory =  async (req, res) => {
      }
      res.json(categorias);
   }catch{
-    console.error(error);
     res.status(500).json({error: "Error al obtener las categorias activas"})
   }
 }
@@ -56,7 +55,6 @@ const getInactiveCategory =  async (req, res) => {
      }
      res.json(categorias);
   }catch{
-    console.error(error);
     res.status(500).json({error: "Error al obtener las categorias inactivas"})
   }
 }
