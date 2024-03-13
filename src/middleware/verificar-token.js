@@ -15,7 +15,7 @@ function verificarToken(req, res, next) {
         next();
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ error: 'Token expirado. Por favor, inicie sesión de nuevo.' });
+            return res.status(403).json({ error: 'Token expirado. Por favor, inicie sesión de nuevo.' });
         } else {
             console.log(error);
             return res.status(401).json({ error: 'Token no válido.' });
