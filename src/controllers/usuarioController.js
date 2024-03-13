@@ -213,7 +213,7 @@ async function loginUser(req, res) {
     const isPasswordValid = await bcrypt.compare(contrasena, usuario.contrasena);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Credenciales incorrectas." });
+      return res.status(404).json({ error: "Credenciales incorrectas." });
     }
 
     const token = await generarJWT(usuario.id);
